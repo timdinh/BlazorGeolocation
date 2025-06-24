@@ -11,7 +11,7 @@ public sealed class GeolocationJs : IAsyncDisposable
         _thisDotNetObjectReference = DotNetObjectReference.Create(this);
 
         _moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
-            "import", "./_content/BlazorGeolocation/geolocation.js").AsTask());
+            "import", "./_content/FARENTAL.BlazorGeolocation/geolocation.js").AsTask());
     }
 
     private readonly Lazy<Task<IJSObjectReference>> _moduleTask;
