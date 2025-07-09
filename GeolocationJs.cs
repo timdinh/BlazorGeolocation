@@ -30,17 +30,17 @@ public sealed class GeolocationJs : IAsyncDisposable
     /// <summary>
     /// Initiate streaming of coordinate. To receive, implement <see cref="IRecipient{TMessage}"/> where TMessage is <see cref="BlazorGeolocation.Coordinate"/>
     /// </summary>
-    public async ValueTask StartSendingLocationAsync(bool enableHighAccuracy)
+    public async ValueTask StartSendingLocationAsync(bool? enableHighAccuracy = null, int? timeout = null, int? maximumAge = null)
     {
         var module = await _moduleTask.Value.ConfigureAwait(false);
 
         // Pass the reference and options to the JS function
-        await module.InvokeVoidAsync("startSendingLocation", _thisDotNetObjectReference, enableHighAccuracy)
+        await module.InvokeVoidAsync("startSendingLocation", _thisDotNetObjectReference, enableHighAccuracy, timeout, maximumAge)
             .ConfigureAwait(false);
     }
 
     /// <summary>
-    /// Tell the browser to stop sending location
+    /// Tell the browser to stop sending location.
     /// </summary>
     public async ValueTask StopSendingLocationAsync()
     {
@@ -78,6 +78,7 @@ public sealed class GeolocationJs : IAsyncDisposable
         if (_moduleTask.IsValueCreated)
         {
             var module = await _moduleTask.Value;
+            await module.InvokeVoidAsync("stopSendingLocation").ConfigureAwait(false);
             await module.DisposeAsync();
         }
 
@@ -107,4 +108,13 @@ public sealed class Coordinate
 
     [JsonPropertyName("accuracy")]
     public double Accuracy { get; init; }
+
+    /// <summary>
+    /// Timestamp in milliseconds since Unix epoch (January 1, 1970)
+    /// </summary>
+    [JsonPropertyName("timestamp")]
+    public long Timestamp { get; init; }
+
+    public DateTimeOffset GetTimestampAsDateTimeOffset()
+        => DateTimeOffset.FromUnixTimeMilliseconds(Timestamp);
 }

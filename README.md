@@ -21,13 +21,19 @@ This component send `Coordinate` using `WeakReferenceMessenger`
 
 protected override async Task OnInitializedAsync() 
 {
+    // register to receive BlazorGeolocation.Coordinate
     WeakReferenceMessenger.Register(this);
-    await Geolocation.StartSendingLocationAsync();
+}
+
+protected override async Task OnAfterRenderAsync(bool firstRender) 
+{
+    if (firstRender) {
+        await Geolocation.StartSendingLocationAsync();
+    }
 }
 
 public async Task DisposeAsync()
 {
-    await Geolocation.StopSendingLocationAsync();
     WeakReferenceMessenger.UnRegister(this);
 }
 
