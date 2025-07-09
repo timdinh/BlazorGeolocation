@@ -49,15 +49,25 @@ public sealed class GeolocationJs : IAsyncDisposable
             .ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// This method is called by the JS module when a new location is available.
+    /// It will send the coordinate to all recipients that have registered for it via the WeakReferenceMessenger.
+    /// The coordinate is passed as a <see cref="Coordinate"/> object.
+    /// </summary>
     [JSInvokable("LocationUpdate")]
-    internal void LocationUpdate(Coordinate coordinate)
+    public void LocationUpdate(Coordinate coordinate)
     {
         // pass on
         WeakReferenceMessenger.Default.Send(coordinate);
     }
 
+    /// <summary>
+    /// This method is called by the JS module when an error occurs while trying to get the location.
+    /// It will send the error to all recipients that have registered for it via the WeakReferenceMessenger.
+    /// The error is passed as a <see cref="LocationErrorArg"/> object.
+    /// </summary>
     [JSInvokable("LocationError")]
-    internal void LocationError(LocationErrorArg arg)
+    public void LocationError(LocationErrorArg arg)
     {
         // pass on
         WeakReferenceMessenger.Default.Send(arg);
