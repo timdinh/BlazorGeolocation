@@ -49,14 +49,14 @@ public sealed class GeolocationJs : IAsyncDisposable
             .ConfigureAwait(false);
     }
 
-    [JSInvokable]
+    [JSInvokable("LocationUpdate")]
     internal void LocationUpdate(Coordinate coordinate)
     {
         // pass on
         WeakReferenceMessenger.Default.Send(coordinate);
     }
 
-    [JSInvokable]
+    [JSInvokable("LocationError")]
     internal void LocationError(LocationErrorArg arg)
     {
         // pass on
